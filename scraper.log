@@ -1,0 +1,213 @@
+nohup: ignoring input
+El script comenzará en 5 segundos...
+Se encontraron 221 cuentas totales. Verificando cuáles procesar...
+Filtrando cuentas según los criterios...
+[FILTRO] 4443926822: OK (Vigente). Omitiendo.
+[FILTRO] 4446617624: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446617625: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446619803: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446617620: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443316990: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4441778602: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445727895: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445099461: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445100742: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445125988: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445083794: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445085681: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445863015: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442347304: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442133684: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445863098: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4444468639: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445122866: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445127368: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442361562: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445118945: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4441948476: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442202768: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445862995: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445097673: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4441761178: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442923492: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4447057747: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445411570: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4441913801: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445080450: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443158177: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445374939: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445863038: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4448598926: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445413435: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4441948489: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443178786: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445027094: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446616524: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445862959: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4446616513: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445443413: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445413052: Saldo bajo (30.72). Marcada para procesar.
+[FILTRO] 4445073637: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4443188344: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441784296: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 9994396629: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4446616598: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4446631579: Saldo bajo (46.17). Marcada para procesar.
+[FILTRO] 4442342794: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4446616531: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4446616590: Vence pronto o está vencida (2025-11-13). Marcada para procesar.
+[FILTRO] 4441893141: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4444269462: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4442146988: Saldo bajo (51.65). Marcada para procesar.
+[FILTRO] 4446500665: OK (Vigente). Omitiendo.
+[FILTRO] 4444362730: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4446616587: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447060285: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4443416124: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447060253: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4443176373: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445863130: Saldo bajo (0.97). Marcada para procesar.
+[FILTRO] 4445063668: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445737890: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445075263: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4447063688: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4443177220: Saldo bajo (84.16). Marcada para procesar.
+[FILTRO] 4442410557: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445393581: Vence pronto o está vencida (2025-11-18). Marcada para procesar.
+[FILTRO] 4446616576: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4446616617: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445411911: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445738147: OK (Vigente). Omitiendo.
+[FILTRO] 4441958276: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4444287996: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4441894335: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445449455: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4444363390: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445442717: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4445439303: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4446616586: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4444533470: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4441924662: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441358094: Vence pronto o está vencida (2025-11-14). Marcada para procesar.
+[FILTRO] 4445844801: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447060265: Vence pronto o está vencida (2025-11-12). Marcada para procesar.
+[FILTRO] 4445436270: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4445862975: Saldo bajo (0.69). Marcada para procesar.
+[FILTRO] 4448564764: Saldo bajo (34.10). Marcada para procesar.
+[FILTRO] 4447060254: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445861384: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4443182800: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445844803: OK (Vigente). Omitiendo.
+[FILTRO] 4446616512: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442004836: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445861827: OK (Vigente). Omitiendo.
+[FILTRO] 4446616626: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4441882040: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447083534: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4442923950: Saldo bajo (73.68). Marcada para procesar.
+[FILTRO] 4447090838: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4446616568: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4441832226: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441761195: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4446607641: Vence pronto o está vencida (2025-11-14). Marcada para procesar.
+[FILTRO] 4446631478: Saldo bajo (42.17). Marcada para procesar.
+[FILTRO] 4442994018: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4448564892: Vence pronto o está vencida (2025-11-14). Marcada para procesar.
+[FILTRO] 4441778497: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4446631628: Saldo bajo (93.79). Marcada para procesar.
+[FILTRO] 4441948501: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4447068490: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4448561271: Vence pronto o está vencida (2025-11-14). Marcada para procesar.
+[FILTRO] 4445862996: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4441948810: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4444472601: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4442228181: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4444287999: Saldo bajo (34.81). Marcada para procesar.
+[FILTRO] 4441949738: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445738322: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4445862949: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4441731668: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445765674: Saldo bajo (51.27). Marcada para procesar.
+[FILTRO] 4445443444: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4443159289: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4441763451: OK (Vigente). Omitiendo.
+[FILTRO] 4445450452: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4445393576: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4443342800: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441948482: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4443178544: OK (Vigente). Omitiendo.
+[FILTRO] 4444361551: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447060255: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4442351544: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4446616567: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442892494: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4447032055: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4443897039: Vence pronto o está vencida (2025-11-13). Marcada para procesar.
+[FILTRO] 4445063151: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4447066643: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4443188589: Saldo bajo (99.19). Marcada para procesar.
+[FILTRO] 4446500642: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445765748: Saldo bajo (6.72). Marcada para procesar.
+[FILTRO] 4445393569: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4442393396: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445863094: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4446616525: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446500594: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441841684: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4442085955: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445442947: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4441948646: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445097558: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4445098468: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4444538958: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4441948411: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4442923976: Saldo bajo (73.02). Marcada para procesar.
+[FILTRO] 4445844800: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4441948559: OK (Vigente). Omitiendo.
+[FILTRO] 4446517009: Vence pronto o está vencida (2025-11-14). Marcada para procesar.
+[FILTRO] 4441846647: Vence pronto o está vencida (2025-11-11). Marcada para procesar.
+[FILTRO] 4445863021: Saldo bajo (1.02). Marcada para procesar.
+[FILTRO] 4445863024: Saldo bajo (0.00). Marcada para procesar.
+[FILTRO] 4441913159: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4441700893: Vence pronto o está vencida (2025-11-16). Marcada para procesar.
+[FILTRO] 4444276016: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446612144: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4446614113: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446614106: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446617858: Saldo bajo (47.55). Marcada para procesar.
+[FILTRO] 4446617859: Saldo bajo (47.53). Marcada para procesar.
+[FILTRO] 4441338118: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4445847079: Saldo bajo (0.89). Marcada para procesar.
+[FILTRO] 4441344400: OK (Vigente). Omitiendo.
+[FILTRO] 4441345929: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4444363569: Vence pronto o está vencida (2025-11-15). Marcada para procesar.
+[FILTRO] 4444526665: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4445414687: Registro existente pero sin datos claros. Marcada para procesar.
+[FILTRO] 4445072256: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4442207306: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446631538: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446631655: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4444278767: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445441624: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442191673: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446631455: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442191723: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4446500664: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4444269459: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445400093: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443489741: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4445118859: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4444279504: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445115494: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445103565: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442091566: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4442191361: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4442227152: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443176128: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445863348: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4443158053: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445738081: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445765893: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445436276: Último estado 'Fallido'. Marcada para procesar.
+[FILTRO] 4445443808: Vence pronto o está vencida (2025-11-19). Marcada para procesar.
+[FILTRO] 4444288003: Último estado 'Fallido'. Marcada para procesar.
