@@ -18,6 +18,7 @@ import unicodedata
 # --- CONFIGURACIÓN DE RUTAS UNIVERSALES ---
 # Detecta automáticamente /home/nombre_usuario
 HOME = os.path.expanduser("~")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 URL_LOGIN = "https://www.mitelcel.com/mitelcel/login"
 
 # --- CONFIGURACIÓN DE HERRAMIENTAS ---
@@ -32,6 +33,7 @@ RUTAS_IMAGENES = {
     "menu_logout": os.path.join(HOME, "imagenes_bot", "boton_menu_logout.png"),
     "confirmar_logout": os.path.join(HOME, "imagenes_bot", "boton_confirmar_logout.png"),
     "foco_pagina": os.path.join(HOME, "imagenes_bot", "area_foco.png"),
+    "servicio_temporal": os.path.join(BASE_DIR, "img_references", "servicio_temporal.png"),
 }
 
 CONFIG_DEFAULT = {
@@ -67,7 +69,7 @@ def clic_en_imagen(imagen_path: str, reintentos=5, confianza=0.8) -> bool:
 
 def cargar_configuracion() -> dict:
     config = CONFIG_DEFAULT.copy()
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+    config_path = os.path.join(BASE_DIR, "config.json")
 
     try:
         if os.path.exists(config_path):
@@ -108,24 +110,59 @@ def es_mensaje_servicio_temporal(texto_ocr: str) -> bool:
     return sum(pistas) >= 2
 
 
+def guardar_captura_servicio_temporal(screenshot=None) -> str or None:
+    try:
+        if screenshot is None:
+            screenshot = pyautogui.screenshot()
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        ruta_captura = os.path.join(BASE_DIR, f"servicio_temporal_{timestamp}.png")
+        screenshot.save(ruta_captura)
+        return ruta_captura
+    except Exception as e:
+        print(f"[SERVICIO] No se pudo guardar la captura del aviso temporal: {e}")
+        return None
+
+
+def detectar_servicio_temporal_por_imagen() -> dict:
+    imagen_path = RUTAS_IMAGENES["servicio_temporal"]
+    if not os.path.exists(imagen_path):
+        return {"detectado": False, "ruta_captura": None, "metodo": None}
+
+    try:
+        caja = pyautogui.locateOnScreen(imagen_path, grayscale=True, confidence=0.85)
+        if caja:
+            return {
+                "detectado": True,
+                "ruta_captura": guardar_captura_servicio_temporal(),
+                "metodo": "imagen",
+            }
+    except Exception as e:
+        print(f"[SERVICIO] No se pudo buscar la imagen de referencia del aviso: {e}")
+
+    return {"detectado": False, "ruta_captura": None, "metodo": None}
+
+
 def detectar_servicio_temporal_en_pantalla() -> dict:
+    resultado_imagen = detectar_servicio_temporal_por_imagen()
+    if resultado_imagen["detectado"]:
+        return resultado_imagen
+
     try:
         screenshot = pyautogui.screenshot()
         texto_ocr = pytesseract.image_to_string(screenshot, lang='spa')
 
         if es_mensaje_servicio_temporal(texto_ocr):
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            ruta_captura = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                f"servicio_temporal_{timestamp}.png"
-            )
-            screenshot.save(ruta_captura)
-            return {"detectado": True, "ruta_captura": ruta_captura}
+            return {
+                "detectado": True,
+                "ruta_captura": guardar_captura_servicio_temporal(screenshot),
+                "metodo": "ocr",
+            }
 
     except Exception as e:
         print(f"[SERVICIO] No se pudo validar la pantalla completa: {e}")
 
-    return {"detectado": False, "ruta_captura": None}
+    return {"detectado": False, "ruta_captura": None, "metodo": None}
 
 
 def cerrar_firefox():
@@ -245,7 +282,8 @@ def procesar_cuenta(numero: str, contrasena: str, config: dict) -> dict or None:
             diagnostico_servicio = detectar_servicio_temporal_en_pantalla()
             if diagnostico_servicio["detectado"]:
                 servicio_temporal_detectado = True
-                print("[SERVICIO] Se detectó el mensaje de indisponibilidad temporal del portal.")
+                metodo = diagnostico_servicio.get("metodo") or "desconocido"
+                print(f"[SERVICIO] Se detectó el mensaje de indisponibilidad temporal del portal por {metodo}.")
                 if diagnostico_servicio["ruta_captura"]:
                     print(f"[SERVICIO] Se guardó una captura en: {diagnostico_servicio['ruta_captura']}")
             else:
