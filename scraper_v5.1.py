@@ -12,6 +12,7 @@ from utils_cifrado import descifrar_texto
 import os
 import random
 import subprocess 
+import json
 
 # --- CONFIGURACIÓN DE RUTAS UNIVERSALES ---
 # Detecta automáticamente /home/nombre_usuario
@@ -159,10 +160,22 @@ def procesar_cuenta(numero: str, contrasena: str) -> dict or None:
 if __name__ == "__main__":
     print("El script comenzará en 5 segundos...")
     time.sleep(random.uniform(4.0, 6.0))
+    
+    # --- CARGAR CONFIGURACIÓN ---
+    dias_tolerancia = 7
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+    try:
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                config_data = json.load(f)
+                dias_tolerancia = config_data.get("dias_tolerancia_vencimiento", 7)
+    except Exception as e:
+        print(f"No se pudo leer config.json adecuadamente, usando valor por defecto {dias_tolerancia}. Error: {e}")
+
     db = SessionLocal()
     try:
         hoy = datetime.now().date()
-        limite_7_dias = hoy + timedelta(days=7)
+        limite_dias = hoy + timedelta(days=dias_tolerancia)
         # Solo seleccionamos las cuentas ACTIVAS
         unidades_login_info = db.execute(text("SELECT unidad, numero_celular, contrasena FROM unidades_login WHERE activo = TRUE")).fetchall()
         print(f"Se encontraron {len(unidades_login_info)} cuentas totales. Verificando cuáles procesar...")
@@ -193,8 +206,8 @@ if __name__ == "__main__":
                         print(f"[FILTRO] {u.numero_celular}: Saldo bajo ({ultimo_registro.saldo}). Marcada para procesar.")
                         procesar = True
                     elif ultimo_registro.fecha_vencimiento is not None:
-                        if ultimo_registro.fecha_vencimiento <= limite_7_dias:
-                            print(f"[FILTRO] {u.numero_celular}: Vence pronto o está vencida ({ultimo_registro.fecha_vencimiento}). Marcada para procesar.")
+                        if ultimo_registro.fecha_vencimiento <= limite_dias:
+                            print(f"[FILTRO] {u.numero_celular}: Vence pronto ({dias_tolerancia} días o menos) o está vencida ({ultimo_registro.fecha_vencimiento}). Marcada para procesar.")
                             procesar = True
                         else:
                              print(f"[FILTRO] {u.numero_celular}: OK (Vigente). Omitiendo.")
