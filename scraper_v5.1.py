@@ -13,10 +13,12 @@ import os
 import random
 import subprocess 
 import json
+import unicodedata
 
 # --- CONFIGURACIÓN DE RUTAS UNIVERSALES ---
 # Detecta automáticamente /home/nombre_usuario
 HOME = os.path.expanduser("~")
+URL_LOGIN = "https://www.mitelcel.com/mitelcel/login"
 
 # --- CONFIGURACIÓN DE HERRAMIENTAS ---
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
@@ -30,6 +32,13 @@ RUTAS_IMAGENES = {
     "menu_logout": os.path.join(HOME, "imagenes_bot", "boton_menu_logout.png"),
     "confirmar_logout": os.path.join(HOME, "imagenes_bot", "boton_confirmar_logout.png"),
     "foco_pagina": os.path.join(HOME, "imagenes_bot", "area_foco.png"),
+}
+
+CONFIG_DEFAULT = {
+    "dias_tolerancia_vencimiento": 7,
+    "espera_servicio_temporal_segundos": 300,
+    "max_reintentos_servicio_temporal": 1,
+    "detener_lote_si_servicio_temporal": True,
 }
 
 # --- FUNCIÓN AUXILIAR "INTELIGENTE" ---
@@ -54,6 +63,93 @@ def clic_en_imagen(imagen_path: str, reintentos=5, confianza=0.8) -> bool:
             
     print(f"[CLIC] ERROR: No se pudo encontrar la imagen '{imagen_path}' después de {reintentos} intentos.")
     return False
+
+
+def cargar_configuracion() -> dict:
+    config = CONFIG_DEFAULT.copy()
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+
+    try:
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                config_data = json.load(f)
+
+            for key in ("dias_tolerancia_vencimiento", "espera_servicio_temporal_segundos", "max_reintentos_servicio_temporal"):
+                if key in config_data:
+                    config[key] = int(config_data[key])
+
+            if "detener_lote_si_servicio_temporal" in config_data:
+                config["detener_lote_si_servicio_temporal"] = bool(config_data["detener_lote_si_servicio_temporal"])
+    except Exception as e:
+        print(f"No se pudo leer config.json adecuadamente. Usando configuración por defecto. Error: {e}")
+
+    return config
+
+
+def normalizar_texto_ocr(texto: str) -> str:
+    texto = unicodedata.normalize("NFKD", texto or "")
+    texto = texto.encode("ascii", "ignore").decode("ascii")
+    texto = texto.lower()
+    texto = re.sub(r"\s+", " ", texto)
+    return texto.strip()
+
+
+def es_mensaje_servicio_temporal(texto_ocr: str) -> bool:
+    texto = normalizar_texto_ocr(texto_ocr)
+    if not texto:
+        return False
+
+    pistas = [
+        "tu visita" in texto and "muy importante" in texto,
+        "trabajando para" in texto and "servicio" in texto,
+        "restablecer el servicio" in texto or "reestablecer el servicio" in texto,
+        "intenta mas tarde" in texto or ("intenta" in texto and "mas tarde" in texto),
+    ]
+    return sum(pistas) >= 2
+
+
+def detectar_servicio_temporal_en_pantalla() -> dict:
+    try:
+        screenshot = pyautogui.screenshot()
+        texto_ocr = pytesseract.image_to_string(screenshot, lang='spa')
+
+        if es_mensaje_servicio_temporal(texto_ocr):
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            ruta_captura = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                f"servicio_temporal_{timestamp}.png"
+            )
+            screenshot.save(ruta_captura)
+            return {"detectado": True, "ruta_captura": ruta_captura}
+
+    except Exception as e:
+        print(f"[SERVICIO] No se pudo validar la pantalla completa: {e}")
+
+    return {"detectado": False, "ruta_captura": None}
+
+
+def cerrar_firefox():
+    print("Cerrando Firefox para liberar memoria...")
+    subprocess.run(["pkill", "-f", "firefox"], check=False)
+    time.sleep(5)
+
+
+def abrir_firefox():
+    print("Abriendo Firefox en la URL de login...")
+    subprocess.Popen(["firefox", URL_LOGIN])
+    time.sleep(12)
+
+    print("Dando clic en el área de trabajo (foco)...")
+    clic_en_imagen(RUTAS_IMAGENES["foco_pagina"])
+    time.sleep(random.uniform(1.5, 2.5))
+
+
+def reiniciar_firefox(espera_previa=0):
+    cerrar_firefox()
+    if espera_previa > 0:
+        print(f"Esperando {espera_previa} segundos antes de reabrir Firefox...")
+        time.sleep(espera_previa)
+    abrir_firefox()
 
 # --- CONFIGURACIÓN DE CAPTURA ---
 LEFT, TOP, WIDTH, HEIGHT = 650, 271, 531, 206
@@ -81,96 +177,120 @@ def extraer_datos(texto_ocr: str) -> dict:
 
 
 # --- FUNCIÓN DE PROCESO ---
-def procesar_cuenta(numero: str, contrasena: str) -> dict or None:
-    datos_extraidos = None 
-    try:
-        print(f"\n--- Procesando número: {numero} ---")
-        
-        print("Recargando página (F5) para un estado limpio...")
-        pyautogui.press('f5')
-        time.sleep(random.uniform(8.0, 10.0)) 
+def procesar_cuenta(numero: str, contrasena: str, config: dict) -> dict or None:
+    espera_servicio = max(60, int(config.get("espera_servicio_temporal_segundos", 300)))
+    max_reintentos_servicio = max(0, int(config.get("max_reintentos_servicio_temporal", 1)))
 
-        print("Haciendo clic en campo de usuario...")
-        if not clic_en_imagen(RUTAS_IMAGENES["usuario"], reintentos=3):
-            print("ERROR: No se encontró el campo de usuario después de recargar. Abortando cuenta.")
-            return None 
-        
-        print("Limpiando campo...")
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.press('backspace')
-        pyautogui.PAUSE = random.uniform(0.15, 0.3)
-        print("Escribiendo número...")
-        pyautogui.write(numero, interval=random.uniform(0.08, 0.15))
-        pyautogui.press('tab')
+    for intento_servicio in range(max_reintentos_servicio + 1):
+        datos_extraidos = None
+        servicio_temporal_detectado = False
 
-        print("Limpiando campo de contraseña...")
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.press('backspace')
-        pyautogui.PAUSE = random.uniform(0.15, 0.3)
-        print("Escribiendo contraseña...")
-        pyautogui.write(contrasena, interval=random.uniform(0.08, 0.15))
+        try:
+            print(f"\n--- Procesando número: {numero} ---")
+            if intento_servicio > 0:
+                print(f"[SERVICIO] Reintento {intento_servicio}/{max_reintentos_servicio} por indisponibilidad temporal del portal.")
 
-        print("Haciendo clic en 'Iniciar Sesión'...")
-        if not clic_en_imagen(RUTAS_IMAGENES["login"]):
-            print("ERROR: No se encontró el botón de login.")
-            return None 
+            print("Recargando página (F5) para un estado limpio...")
+            pyautogui.press('f5')
+            time.sleep(random.uniform(8.0, 10.0))
 
-        print("Esperando a que la página cargue...")
-        time.sleep(random.uniform(14.0, 17.0))
+            print("Haciendo clic en campo de usuario...")
+            if not clic_en_imagen(RUTAS_IMAGENES["usuario"], reintentos=3):
+                print("ERROR: No se encontró el campo de usuario después de recargar. Abortando cuenta.")
+                return None
 
-        texto_extraido = ""
-        datos_encontrados = False
-        for intento in range(1, 4):
-            print(f"Capturando pantalla (Intento {intento}/3)...")
-            screenshot = pyautogui.screenshot(region=(LEFT, TOP, WIDTH, HEIGHT))
-            texto_extraido = pytesseract.image_to_string(screenshot, lang='spa')
-            if "Saldo Amigo" in texto_extraido or "Saldo expirado" in texto_extraido:
-                print("¡Captura de datos exitosa!")
-                datos_encontrados = True
-                break
-            else:
+            print("Limpiando campo...")
+            pyautogui.hotkey('ctrl', 'a')
+            pyautogui.press('backspace')
+            pyautogui.PAUSE = random.uniform(0.15, 0.3)
+            print("Escribiendo número...")
+            pyautogui.write(numero, interval=random.uniform(0.08, 0.15))
+            pyautogui.press('tab')
+
+            print("Limpiando campo de contraseña...")
+            pyautogui.hotkey('ctrl', 'a')
+            pyautogui.press('backspace')
+            pyautogui.PAUSE = random.uniform(0.15, 0.3)
+            print("Escribiendo contraseña...")
+            pyautogui.write(contrasena, interval=random.uniform(0.08, 0.15))
+
+            print("Haciendo clic en 'Iniciar Sesión'...")
+            if not clic_en_imagen(RUTAS_IMAGENES["login"]):
+                print("ERROR: No se encontró el botón de login.")
+                return None
+
+            print("Esperando a que la página cargue...")
+            time.sleep(random.uniform(14.0, 17.0))
+
+            texto_extraido = ""
+            datos_encontrados = False
+            for intento in range(1, 4):
+                print(f"Capturando pantalla (Intento {intento}/3)...")
+                screenshot = pyautogui.screenshot(region=(LEFT, TOP, WIDTH, HEIGHT))
+                texto_extraido = pytesseract.image_to_string(screenshot, lang='spa')
+                if "Saldo Amigo" in texto_extraido or "Saldo expirado" in texto_extraido:
+                    print("¡Captura de datos exitosa!")
+                    datos_encontrados = True
+                    break
+
                 print("La captura no contiene la información esperada. Reintentando...")
                 time.sleep(random.uniform(4.5, 6.0))
                 if intento == 3:
                     print("Se superó el número de reintentos (OCR fallido).")
-        
-        if datos_encontrados:
-            datos_extraidos = extraer_datos(texto_extraido)
 
-    except Exception as e:
-        print(f"Ocurrió un error crítico durante la automatización para {numero}: {e}")
-    
-    finally:
-        print("--- Ejecutando proceso de cierre de sesión (limpieza) ---")
-        print("Cerrando sesión (Paso 1: Menú)...")
-        if not clic_en_imagen(RUTAS_IMAGENES["menu_logout"], reintentos=2):
-            print("ADVERTENCIA: No se encontró el botón de menú de logout. (Puede que ya esté deslogueado)")
-        else:
-            time.sleep(random.uniform(0.8, 1.3))
-            print("Cerrando sesión (Paso 2: Confirmar)...")
-            if not clic_en_imagen(RUTAS_IMAGENES["confirmar_logout"], reintentos=2):
-                print("ADVERTENCIA: No se encontró el botón de confirmar logout.")
-        
-        print("--- Limpieza finalizada. Continuando... ---")
-        time.sleep(random.uniform(3.0, 5.0)) 
+            if datos_encontrados:
+                datos_extraidos = extraer_datos(texto_extraido)
+                return datos_extraidos
 
-    return datos_extraidos 
+            diagnostico_servicio = detectar_servicio_temporal_en_pantalla()
+            if diagnostico_servicio["detectado"]:
+                servicio_temporal_detectado = True
+                print("[SERVICIO] Se detectó el mensaje de indisponibilidad temporal del portal.")
+                if diagnostico_servicio["ruta_captura"]:
+                    print(f"[SERVICIO] Se guardó una captura en: {diagnostico_servicio['ruta_captura']}")
+            else:
+                print("[OCR] No se detectó saldo ni tampoco el mensaje de servicio temporal.")
+
+        except Exception as e:
+            print(f"Ocurrió un error crítico durante la automatización para {numero}: {e}")
+
+        finally:
+            print("--- Ejecutando proceso de cierre de sesión (limpieza) ---")
+            print("Cerrando sesión (Paso 1: Menú)...")
+            if not clic_en_imagen(RUTAS_IMAGENES["menu_logout"], reintentos=2):
+                print("ADVERTENCIA: No se encontró el botón de menú de logout. (Puede que ya esté deslogueado)")
+            else:
+                time.sleep(random.uniform(0.8, 1.3))
+                print("Cerrando sesión (Paso 2: Confirmar)...")
+                if not clic_en_imagen(RUTAS_IMAGENES["confirmar_logout"], reintentos=2):
+                    print("ADVERTENCIA: No se encontró el botón de confirmar logout.")
+
+            print("--- Limpieza finalizada. Continuando... ---")
+            time.sleep(random.uniform(3.0, 5.0))
+
+        if servicio_temporal_detectado:
+            if intento_servicio < max_reintentos_servicio:
+                print(f"[SERVICIO] Esperando {espera_servicio} segundos y reiniciando Firefox antes de reintentar esta misma cuenta...")
+                reiniciar_firefox(espera_previa=espera_servicio)
+                continue
+
+            return {
+                "tipo_error": "servicio_temporal",
+                "detalle": "Portal Telcel temporalmente no disponible. Conviene reintentar el lote más tarde.",
+                "detener_lote": bool(config.get("detener_lote_si_servicio_temporal", True)),
+            }
+
+        return datos_extraidos
+
+    return None
 
 # --- EJECUCIÓN PRINCIPAL ---
 if __name__ == "__main__":
     print("El script comenzará en 5 segundos...")
     time.sleep(random.uniform(4.0, 6.0))
-    
-    # --- CARGAR CONFIGURACIÓN ---
-    dias_tolerancia = 7
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
-    try:
-        if os.path.exists(config_path):
-            with open(config_path, "r", encoding="utf-8") as f:
-                config_data = json.load(f)
-                dias_tolerancia = config_data.get("dias_tolerancia_vencimiento", 7)
-    except Exception as e:
-        print(f"No se pudo leer config.json adecuadamente, usando valor por defecto {dias_tolerancia}. Error: {e}")
+
+    config = cargar_configuracion()
+    dias_tolerancia = config["dias_tolerancia_vencimiento"]
 
     db = SessionLocal()
     try:
@@ -224,15 +344,9 @@ if __name__ == "__main__":
             print("No hay cuentas que procesar hoy. Saliendo.")
             db.close()
             exit()
-            
-        # --- APERTURA INICIAL DEL NAVEGADOR ---
-        print("Abriendo Firefox en la URL de login...")
-        subprocess.Popen(["firefox", "https://www.mitelcel.com/mitelcel/login"])
-        time.sleep(12) 
 
-        print("Dando clic en el área de trabajo (foco)...")
-        clic_en_imagen(RUTAS_IMAGENES["foco_pagina"]) 
-        time.sleep(random.uniform(1.5, 2.5))
+        # --- APERTURA INICIAL DEL NAVEGADOR ---
+        abrir_firefox()
         
         total_unidades = len(cuentas_a_procesar)
         for i, unidad_info in enumerate(cuentas_a_procesar):
@@ -242,13 +356,7 @@ if __name__ == "__main__":
                 print("\n" + "!"*40)
                 print(f"LIMPIEZA DE MEMORIA: Han pasado 20 cuentas. Reiniciando Firefox...")
                 print("!"*40 + "\n")
-                os.system("pkill -f firefox")
-                time.sleep(5) 
-                print("Abriendo Firefox limpio...")
-                subprocess.Popen(["firefox", "https://www.mitelcel.com/mitelcel/login"])
-                time.sleep(12) 
-                print("Recuperando foco...")
-                clic_en_imagen(RUTAS_IMAGENES["foco_pagina"])
+                reiniciar_firefox()
                 time.sleep(3)
             # -------------------------------------------------------
 
@@ -259,7 +367,7 @@ if __name__ == "__main__":
                 print(f"Error al descifrar contraseña para {unidad_info.numero_celular}:{e}. Intentando con Default...")
                 contrasena = "DETFU2020" #continue
 
-            datos_obtenidos = procesar_cuenta(unidad_info.numero_celular, contrasena)
+            datos_obtenidos = procesar_cuenta(unidad_info.numero_celular, contrasena, config)
             
             registro = Unidad(
                 unidad=unidad_info.unidad,
@@ -268,6 +376,7 @@ if __name__ == "__main__":
                 cliente_administrador_id=1
             )
 
+            detener_lote = False
             if datos_obtenidos and datos_obtenidos.get("saldo") is not None:
                 print(f"Éxito para {unidad_info.numero_celular}. Detalle: {datos_obtenidos['detalle']}. Guardando en BD...")
                 registro.saldo = datos_obtenidos["saldo"]
@@ -277,10 +386,18 @@ if __name__ == "__main__":
             else:
                 print(f"Fallo para {unidad_info.numero_celular}. Registrando en BD.")
                 registro.estado_consulta = "Fallido"
-                registro.detalle = "Error de OCR o página no cargada"
+                if datos_obtenidos and datos_obtenidos.get("tipo_error") == "servicio_temporal":
+                    registro.detalle = datos_obtenidos["detalle"]
+                    detener_lote = datos_obtenidos.get("detener_lote", False)
+                else:
+                    registro.detalle = "Error de OCR o página no cargada"
 
             db.add(registro)
             db.commit()
+
+            if detener_lote:
+                print("[SERVICIO] El portal sigue indisponible después de los reintentos. Se detiene el lote para probar más tarde.")
+                break
 
             if i < total_unidades - 1:
                 espera = random.uniform(35.0, 50.0)
@@ -296,7 +413,7 @@ if __name__ == "__main__":
         print("\n" + "*"*50)
         print("SCRIPT TERMINADO (O ERROR). CERRANDO FIREFOX PARA LIBERAR MEMORIA.")
         print("*"*50)
-        os.system("pkill -f firefox")
+        cerrar_firefox()
         
         db.close()
         print("PROCESO DE SCRAPING COMPLETADO.")

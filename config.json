@@ -1,3 +1,6 @@
 {
-    "dias_tolerancia_vencimiento": 7
+    "dias_tolerancia_vencimiento": 7,
+    "espera_servicio_temporal_segundos": 300,
+    "max_reintentos_servicio_temporal": 1,
+    "detener_lote_si_servicio_temporal": true
 }
